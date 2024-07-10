@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather app</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="parent">
+        <div class="main">
+            <nav>
+                <form action="/submit" method="post">
+                    <input type = "text" name="place" placeholder="enter the cityname">
+                    <button>
+                        <img src="./images/search.png">
+                    </button>
+                </form>
+            </nav>
+            <% if(locals.data){ %>
+                <% if(data.weather[0].main=="clouds"){ %>
+                    <img src="./images/clouds.png">
+                <% } else if(data.weather[0].main.toLowerCase()=="clear") {%>
+                    <img src="./images/clear.png">
+                <% } else if(data.weather[0].main.toLowerCase()=="mist") {%>
+                    <img src="./images/mist.png">
+                <% } else if(data.weather[0].main.toLowerCase()=="rain") {%>
+                    <img src="./images/rain.png">
+                <% } else if(data.weather[0].main.toLowerCase()=="snow") {%>
+                    <img src="./images/snow.png">
+                <%} else {%>
+                    <img src="./images/drizzle.png">
+                <% } %>
+            <% } else {%>
+                <img>
+            <% } %> 
+            <div class="text">
+                <% if(locals.data) { %>
+                    <span><span><%= data.main.temp %></span>°C</span>
+                <% } else {%>
+                    <span></span><span></span>
+                <% } %>
+                <% if(locals.data) {%>
+                    <span><%= data.name %></span>
+                <% } else {%>
+                    <span></span>
+                <% } %>
+            </div>
+            <div class="second">
+                <div class="hw humidity">
+                    <img src="./images/humidity.png">
+                    <% if(locals.data) {%>
+                        <span><%= data.main.humidity %>%</span>
+                    <% } else {%>
+                        <span></span>
+                    <% } %>
+                    <span>Humidity</span>
+                </div>
+                <div class="hw wind">
+                    <img src="./images/wind.png">
+                    <% if(locals.data) {%>
+                        <span><%= data.wind.speed %>KM/h</span>
+                    <% } else {%>
+                        <span></span>
+                    <% } %>
+                    <span>Wind speed</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
