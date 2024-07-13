@@ -1,0 +1,30 @@
+*{
+    font-family: "Open Sans", sans-serif;
+}
+h1{
+    font-size: 26px;
+}
+.root{
+    height: 50vh;
+    width: 30vw;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    margin: auto;
+    margin-top: 8%;
+}
+.buttons{
+    display: flex;
+    gap: 20px;
+    margin: auto;
+    margin-top: 25%;
+    justify-content: center;
+}
+.buttons button{
+    height: 5vh;
+    width: 10vw;
+    color: aliceblue;
+    background-color: black;
+    border-radius: 15px;
+}

@@ -4,15 +4,57 @@ import { dirname } from "path";
 import { fileURLToPath } from "url";
 import axios from "axios";
 import env from "dotenv";
-const _dirname = dirname(fileURLToPath(import.meta.url));
+import pg from "pg";
 env.config();
+const db = new pg.Client({
+    user: process.env.USER,
+    host: "localhost",
+    database: process.env.DATABASE,
+    password: process.env.PASSWORD,
+    port: 5432,
+});
+db.connect();
+const _dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 const apiKey = process.env.API_KEY;
 const apiURL = "https://api.openweathermap.org/data/2.5/weather?units=metric";
 app.use(express.static("public"));
 app.use((bodyParser.urlencoded({extended:true})));
 app.get("/",(req,res)=>{
-    res.render("weather.ejs");
+    res.sendFile(_dirname + "/public/home.html");
+});
+app.get("/login",(req,res)=>{
+    res.render("login.ejs");
+});
+app.get("/register",(req,res)=>{
+    res.render("register.ejs");
+});
+app.post("/login",async (req,res)=>{
+    const email = await req.body.username;
+    const password = await req.body.password;
+    const check = await db.query("SELECT * FROM users WHERE email = $1",[email]);
+    if(check.rows.length>0){
+        if(check.rows[0].password===password){
+            res.render("weather.ejs");
+        }
+        else{
+            res.send("incorrect password");
+        }
+    }
+    else{
+        res.send("email not found");
+    }
+});
+app.post("/register",async (req,res)=>{
+    const email = req.body["username"];
+    const password = req.body["password"];
+    const check = await db.query("SELECT * FROM users WHERE email = $1",[email]);
+    if(check.rows.length>0){
+        res.send("email is already used");
+    }else{
+        const result = await db.query("INSERT INTO users (email,password) VALUES($1,$2)",[email,password]);
+    }
+    res.render("login.ejs");
 });
 app.post("/submit",async (req,res)=>{
     try{

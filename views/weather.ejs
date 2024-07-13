@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather app</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <title>Calling clouds</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -19,20 +22,22 @@
             </nav>
             <% if(locals.data){ %>
                 <% if(data.weather[0].main=="clouds"){ %>
-                    <img src="./images/clouds.png">
+                    <img class="Wimg" src="./images/clouds.png">
                 <% } else if(data.weather[0].main.toLowerCase()=="clear") {%>
-                    <img src="./images/clear.png">
+                    <img class="Wimg" src="./images/clear.png">
                 <% } else if(data.weather[0].main.toLowerCase()=="mist") {%>
-                    <img src="./images/mist.png">
+                    <img class="Wimg" src="./images/mist.png">
                 <% } else if(data.weather[0].main.toLowerCase()=="rain") {%>
-                    <img src="./images/rain.png">
+                    <img class="Wimg" src="./images/rain.png">
                 <% } else if(data.weather[0].main.toLowerCase()=="snow") {%>
-                    <img src="./images/snow.png">
+                    <img class="Wimg" src="./images/snow.png">
                 <%} else {%>
-                    <img src="./images/drizzle.png">
+                    <img class="Wimg" src="./images/drizzle.png">
                 <% } %>
             <% } else {%>
-                <img>
+                <div class="home">
+                    Hello welcome to calling clouds
+                </div>
             <% } %> 
             <div class="text">
                 <% if(locals.data) { %>
@@ -46,25 +51,29 @@
                     <span></span>
                 <% } %>
             </div>
-            <div class="second">
-                <div class="hw humidity">
-                    <img src="./images/humidity.png">
-                    <% if(locals.data) {%>
-                        <span><%= data.main.humidity %>%</span>
-                    <% } else {%>
-                        <span></span>
-                    <% } %>
-                    <span>Humidity</span>
-                </div>
-                <div class="hw wind">
-                    <img src="./images/wind.png">
-                    <% if(locals.data) {%>
-                        <span><%= data.wind.speed %>KM/h</span>
-                    <% } else {%>
-                        <span></span>
-                    <% } %>
-                    <span>Wind speed</span>
-                </div>
+            <% if(locals.data){ %>
+                <div class="second">
+                    <div class="hw humidity">
+                        <img src="./images/humidity.png">
+                        <% if(locals.data) {%>
+                            <span><%= data.main.humidity %>%</span>
+                        <% } else {%>
+                            <span></span>
+                        <% } %>
+                        <span>Humidity</span>
+                    </div>
+                <% } %>  
+                <% if(locals.data){ %>  
+                    <div class="hw wind">
+                        <img src="./images/wind.png">
+                        <% if(locals.data) {%>
+                            <span><%= data.wind.speed %>KM/h</span>
+                        <% } else {%>
+                            <span></span>
+                        <% } %>
+                        <span>Wind speed</span>
+                    </div>
+                <% } %> 
             </div>
         </div>
     </div>
