@@ -4,6 +4,8 @@ import { dirname } from "path";
 import { fileURLToPath } from "url";
 import axios from "axios";
 import env from "dotenv";
+import bcrypt from "bcrypt";
+
 import pg from "pg";
 env.config();
 const db = new pg.Client({
@@ -14,6 +16,8 @@ const db = new pg.Client({
     port: 5432,
 });
 db.connect();
+
+const saltround = 4;
 const _dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 const apiKey = process.env.API_KEY;
@@ -34,12 +38,19 @@ app.post("/login",async (req,res)=>{
     const password = await req.body.password;
     const check = await db.query("SELECT * FROM users WHERE email = $1",[email]);
     if(check.rows.length>0){
-        if(check.rows[0].password===password){
-            res.render("weather.ejs");
-        }
-        else{
-            res.send("incorrect password");
-        }
+        bcrypt.compare(password,check.rows[0].password,(err,result)=>{
+            if(err){
+                console.log("error",err);
+            }
+            else{
+                if(result){
+                    res.render("weather.ejs");
+                }
+                else{
+                    res.send("incorrect password");
+                }
+            }
+        });
     }
     else{
         res.send("email not found");
@@ -52,14 +63,20 @@ app.post("/register",async (req,res)=>{
     if(check.rows.length>0){
         res.send("email is already used");
     }else{
-        const result = await db.query("INSERT INTO users (email,password) VALUES($1,$2)",[email,password]);
+        bcrypt.hash(password,saltround,async (err,hash)=>{
+            if(err){
+                console.log("error");
+            }
+            else{
+                const result = await db.query("INSERT INTO users (email,password) VALUES($1,$2)",[email,hash]);
+            }
+        })
     }
     res.render("login.ejs");
 });
 app.post("/submit",async (req,res)=>{
     try{
         const response = await axios.get(apiURL + `&q=${req.body["place"]}` + `&appid=${apiKey}`);
-        console.log(response.data.weather[0].main);
         res.render("weather.ejs",{data: response.data});
     }catch(error){
         console.error("failed: ",error.message);
